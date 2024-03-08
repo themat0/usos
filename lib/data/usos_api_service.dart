@@ -5,6 +5,7 @@ import 'package:flutter_web_auth/flutter_web_auth.dart';
 import 'package:logger/logger.dart';
 import 'package:oauth1/oauth1.dart' as oauth1;
 import 'package:usos/data/credentials_repository.dart';
+import 'package:usos/data/models/course.dart';
 
 import 'models/grade.dart';
 import 'models/term.dart';
@@ -54,17 +55,27 @@ class UsosApiService {
     return response.toString();
   }
 
+  Future<List<Course>> getCourses(Term term) async {
+    final client = await getClient();
+    final response = await client.get(Uri.parse('${usosApi}services/courses/user'));
+    Logger().i(response.body.toString());
+    final responseDecoded = jsonDecode(response.body);
+    return responseDecoded['course_editions'][term.termId].map<Course>((entry) => Course.fromJson(entry)).toList();
+  }
+
   Future<List<Grade>> getGrades(Term term) async {
     final client = await getClient();
-    final responseGrades =
-        await client.get(Uri.parse('${usosApi}services/grades/terms2?term_ids=${term.termId}&fields=value_symbol'));
-    final courseIDs = jsonDecode(responseGrades.body)[term.termId].keys.join('|');
-    final responseCourse =
-        await client.get(Uri.parse('${usosApi}services/courses/courses?course_ids=$courseIDs&fields=id|name'));
-    final parsedResponse = jsonDecode(responseGrades.body)[term.termId]
-        .entries
-        .map<Grade>((entry) => Grade.fromJson(entry.key, entry.value, jsonDecode(responseCourse.body)))
+    final responseGrades = jsonDecode(
+        (await client.get(Uri.parse('${usosApi}services/grades/terms2?term_ids=${term.termId}&fields=value_symbol')))
+            .body);
+    final courses = await getCourses(term);
+
+    final responseECTS = await getECTS(term.termId);
+    final parsedResponse = courses
+        .map<Grade>((course) => Grade.fromJson(
+        course, responseGrades[term.termId][course.courseId], responseECTS != null ? responseECTS[course.courseId] : null))
         .toList();
+
     return parsedResponse;
   }
 
@@ -72,5 +83,12 @@ class UsosApiService {
     final client = await getClient();
     final response = await client.get(Uri.parse('${usosApi}services/courses/user?fields=terms'));
     return jsonDecode(response.body)["terms"].map<Term>((entry) => Term.fromJson(entry)).toList();
+  }
+
+  Future<Map<String, dynamic>?> getECTS(String termId) async {
+    final client = await getClient();
+    final response = await client.get(Uri.parse('${usosApi}services/courses/user_ects_points'));
+    Logger().i(jsonDecode(response.body)[termId].toString());
+    return jsonDecode(response.body)[termId];
   }
 }

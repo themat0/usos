@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../../data/models/term.dart';
 
 class DropDownTerms extends StatefulWidget {
-  const DropDownTerms(this.items, this.setTerm, {Key? key}) : super(key: key);
+  const DropDownTerms(this.items, this.setTerm, {super.key});
   final List<Term> items;
   final Function(Term newTerm) setTerm;
 

@@ -40,10 +40,15 @@ TextTheme _createTextTheme(BuildContext context) => Theme.of(context).textTheme.
       ),
       titleMedium: const TextStyle(
         color: UsosColors.black,
+        fontWeight: FontWeight.normal,
       ),
       labelSmall: const TextStyle(
         fontSize: Dimensions.fontSizeSmall,
         fontWeight: FontWeight.w200,
         color: UsosColors.black,
+      ),
+      titleSmall: const TextStyle(
+        fontSize: Dimensions.fontSizeSmallest,
+        color: UsosColors.white,
       ),
     );

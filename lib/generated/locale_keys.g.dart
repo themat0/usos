@@ -10,5 +10,6 @@ abstract class  LocaleKeys {
   static const hero1 = 'hero1';
   static const hero2 = 'hero2';
   static const hero3 = 'hero3';
+  static const noGrades = 'noGrades';
 
 }

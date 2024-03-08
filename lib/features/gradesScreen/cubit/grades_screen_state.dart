@@ -24,7 +24,7 @@ class GradesScreenLoading extends GradesScreenState {
 }
 
 class GradesScreenLoaded extends GradesScreenLoading {
-  const GradesScreenLoaded(List<Term> terms, Term selectedTerm, this.grades) : super(terms, selectedTerm);
+  const GradesScreenLoaded(super.terms, super.selectedTerm, this.grades);
 
   final List<Grade> grades;
 

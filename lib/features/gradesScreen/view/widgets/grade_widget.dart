@@ -30,13 +30,13 @@ class GradeWidget extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    grade.name,
-                    style: Theme.of(context).textTheme.titleSmall,
+                    grade.course.courseName,
+                    style: Theme.of(context).textTheme.titleMedium,
                     textAlign: TextAlign.start,
                     overflow: TextOverflow.ellipsis,
                   ),
                   Text(
-                    grade.id,
+                    grade.course.courseId,
                     textAlign: TextAlign.start,
                     style: Theme.of(context).textTheme.labelSmall,
                   ),
@@ -44,17 +44,22 @@ class GradeWidget extends StatelessWidget {
               ),
             ),
             Container(
-              width: 40,
-              height: 40,
+              width: 60,
+              height: 50,
+              padding: const EdgeInsets.all(5),
               decoration: const BoxDecoration(
                 color: UsosColors.primaryColor,
-                shape: BoxShape.circle,
+                //rounded corners
+                borderRadius: BorderRadius.all(Radius.circular(25)),
               ),
-              child: Center(
-                child: Text(
-                  grade.gradeString,
-                  style: Theme.of(context).textTheme.displaySmall,
-                ),
+              child: Column(
+                children: [
+                  Text(
+                    grade.gradeString,
+                    style: Theme.of(context).textTheme.displaySmall,
+                  ),
+                  Text("ECTS: ${grade.ectsString}", style: Theme.of(context).textTheme.titleSmall),
+                ],
               ),
             ),
           ],

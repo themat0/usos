@@ -1,38 +1,41 @@
-import 'dart:io';
+import 'package:usos/data/models/course.dart';
 
 class Grade {
-  final String id;
-  final String name;
+  final Course course;
   final double? grade;
+  final int? ectsPoints;
 
   Grade({
-    required this.id,
-    required this.name,
+    required this.course,
     required this.grade,
+    required this.ectsPoints,
   });
 
   String get gradeString => grade != null ? grade.toString() : '?';
 
-  factory Grade.fromJson(String id, Map<String, dynamic> jsonGrade, Map<String, dynamic> jsonSubject) {
-    final String defaultLocale = Platform.localeName.substring(0, 2);
+  String get ectsString => ectsPoints != null ? ectsPoints.toString() : '?';
+
+  factory Grade.fromJson(Course course, Map<String, dynamic>? jsonGrade, String? ectsPoints) {
     return Grade(
-        id: id,
-        name: jsonSubject[id]['name'][defaultLocale] ?? jsonSubject[id]['name']['en'] ?? jsonSubject[id]['name'].first,
-        grade: jsonGrade['course_grades'].last.values.first != null
-            ? double.tryParse(jsonGrade['course_grades'].last.values.first['value_symbol'].replaceAll(',', '.'))
-            : null);
+        course: course,
+        ectsPoints: ectsPoints != null ? double.tryParse(ectsPoints.replaceAll(',', '.'))?.toInt() : null,
+        grade: jsonGrade == null
+            ? null
+            : jsonGrade['course_grades'].last.values.first != null
+                ? double.tryParse(jsonGrade['course_grades'].last.values.first['value_symbol'].replaceAll(',', '.'))
+                : null);
   }
 
   @override
   String toString() {
-    return 'Grade{id: $id, name: $name, grade: $grade}';
+    return 'Grade{id: ${course.courseId}, name: ${course.courseName}, grade: $grade, ectsPoints: $ectsPoints}';
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
-      'name': name,
+      'course': course,
       'grade': grade,
+      'ectsPoints': ectsPoints,
     };
   }
 }
